@@ -3,13 +3,14 @@ const { error } = require("node:console")
 const app = express()
 const PORT = 8000
 
-const books = [
+const books = [ // this is a dummy array inside the memory we created, for real use data we use database
     { id: 1, title : 'Book One', author : 'Author One' },
     { id: 2, title : 'Book Two', author : 'Author Two' } 
 ]
 
 //Middleware (plugins)
-app.use(express.json())
+app.use(express.json()) // without middleware req.body will return undefined, express convert json into object
+// app.use uses for doing the work in mid of request and response
 
 app.get('/books', (req, res) =>{
     res.json(books) // express will convert this array into json and send this array as a json to the frontend
@@ -18,7 +19,7 @@ app.get('/books', (req, res) =>{
 app.get('/books/:id', (req, res)=>{// here we are giving a query parameter for id
     const id = parseInt(req.params.id) // here we store that id in id container parsing it in integer
     if(isNaN(id)) return res.status(400).json({error: `id must be an number`})
-    const book = books.find(e=> e.id === id) // here we are checking the same id of the book 
+    const book = books.find(e=> e.id === id) // here we are checking the same id of the book , find is a array method return first matching object 
 
     if(!book){
         return res.status(404).json({ error : `Book with id ${id} doesn't exists!`}) // if find any error then giev the error message(handling the error)
@@ -48,12 +49,12 @@ app.delete('/books/:id', (req, res)=>{
 
     if(isNaN(id)) return res.status(400).json({error : 'id must be a type number'})
 
-    const indexToDelete = books.findIndex(e=> e.id === id)
+    const indexToDelete = books.findIndex(e=> e.id === id) // findIndex return index 
 
     if(indexToDelete<0){
         return res.status(404).json({error: ` Book with the id ${id} doesn't exists!`})
     }
-    books.splice(indexToDelete, 1) // this will delete one entry
+    books.splice(indexToDelete, 1) // splice(start, deletecount)
 
     return res.status(200). json({message: 'Book has deleted!'})
 })
